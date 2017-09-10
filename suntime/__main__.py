@@ -6,7 +6,7 @@ from dateutil import tz
 
 class Sun:
     """
-    Aproximated calculation of sunrise and sunset datetimes. Adapted from:
+    Approximated calculation of sunrise and sunset datetimes. Adapted from:
     https://stackoverflow.com/questions/19615350/calculate-sunrise-and-sunset-times-for-a-given-gps-coordinate-within-postgresql
     """
     def __init__(self, lat, lon):
@@ -118,12 +118,7 @@ class Sun:
         if min == 60:
             hr += 1
             min = 0
-        #return {
-        #    'status': True,
-        #    'decimal': UT,
-        #    'hr': hr,
-        #    'min': min
-        #}
+
         return datetime.datetime(year, month, day, hr, int(min), tzinfo=tz.tzutc())
 
     @staticmethod
@@ -136,7 +131,16 @@ class Sun:
 
         return v
 
+
 if __name__ == '__main__':
     sun = Sun(52.234, 21.00)
     print(sun.get_local_sunrise_time())
     print(sun.get_local_sunset_time())
+
+    # On a special date in UTC
+    abd = datetime.date(2014, 10, 3)
+    print("Ada")
+    abd_sr = sun.get_local_sunrise_time(abd)
+    abd_ss = sun.get_local_sunset_time(abd)
+    print(abd_sr)
+    print(abd_ss)

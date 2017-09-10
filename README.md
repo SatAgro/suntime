@@ -3,13 +3,30 @@ Simple sunset and sunrise time calculation python library.
 
 ## Instalation
 
-Just type:
+Download and type:
 
     python setup.py install
 
 ## Usage
 
+You can use the library to get UTC and local time sunrise and sunset times by using:
 
+    import datetime
+    import suntime
+
+    latitude = 51.21
+    longitude = 21.01
+
+    sun = Sun(latitude, longitude)
+
+    # Get today's sunrise and sunset in UTC
+    today_sr = sun.get_sunrise_time()
+    today_ss = sun.get_sunset_time()
+
+    # On a special date in your machine localtime
+    abd = datetime.date(2014,10,3)
+    abd_sr = sun.get_local_sunrise_time(abd)
+    abd_ss = sun.get_local_sunset_time(abd)
 
 
 ## License
