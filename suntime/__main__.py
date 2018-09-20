@@ -160,6 +160,11 @@ class Sun:
             hr += 1
             min = 0
 
+        #10. check corner case https://github.com/SatAgro/suntime/issues/1
+        if hr == 24:
+            hr = 0
+            day += 1
+
         return datetime.datetime(year, month, day, hr, int(min), tzinfo=tz.tzutc())
 
     @staticmethod
