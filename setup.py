@@ -10,5 +10,5 @@ setup(name='suntime',
       author_email=suntime.__email__,
       url='https://github.com/SatAgro/suntime',
       copyright='Copyright 2017 SatAgro',
-      packages=['suntime'], requires=['python-dateutil']
+      packages=['suntime'], requires=['dateutil']
       )
