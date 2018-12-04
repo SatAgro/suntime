@@ -5,8 +5,12 @@ Simple sunset and sunrise time calculation python library.
 
 Download and type:
 
-    python setup.py install
+    python3 setup.py install
 
+Or using pip:
+
+    pip3 install dateutil
+    pip3 install git+https://github.com/satagro/suntime.git
 
 ## Usage
 
@@ -42,7 +46,12 @@ You can use the library to get UTC and local time sunrise and sunset times typin
 
 ## License
 
-Copyright © 2017 SatAgro Sp. z o.o.
+Copyright © 2018 SatAgro Sp. z o.o. and contributors:
+
+* Krzysztof Stopa ([kstopa](https://github.com/kstopa))
+* Andrey Kobyshev ([yokotoka](https://github.com/yokotoka))
+* Matthias ([palto42](https://github.com/plato42))
+
 
 This file is part of SunTime library for python (SunTime).
 
