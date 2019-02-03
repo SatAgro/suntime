@@ -3,14 +3,13 @@ Simple sunset and sunrise time calculation python library.
 
 ## Installation
 
-Download and type:
+Using pip:
+
+    pip3 install suntime
+    
+Or download and type:
 
     python3 setup.py install
-
-Or using pip:
-
-    pip3 install python-dateutil
-    pip3 install git+https://github.com/satagro/suntime.git
 
 ## Usage
 
