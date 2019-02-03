@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 import suntime
 
 setup(name='suntime',
@@ -9,6 +9,6 @@ setup(name='suntime',
       author=suntime.__author__,
       author_email=suntime.__email__,
       url='https://github.com/SatAgro/suntime',
-      copyright='Copyright 2017 SatAgro',
-      packages=['suntime'], requires=['dateutil']
+      copyright='Copyright 2019 SatAgro',
+      packages=['suntime'], install_requires=['python-dateutil']
       )
