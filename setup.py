@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-import suntime
+
 
 setup(name='suntime',
-      version=suntime.__version__,
+      version='1.2.3',
       description='Simple sunset and sunrise time calculation python library',
-      author=suntime.__author__,
-      author_email=suntime.__email__,
+      author='Krzysztof Stopa',
       url='https://github.com/SatAgro/suntime',
       copyright='Copyright 2019 SatAgro',
       license='LGPLv3',

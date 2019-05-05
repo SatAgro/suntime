@@ -1,4 +1,5 @@
 .idea/
+.eggs/
 build/
 dist/
 example.py
