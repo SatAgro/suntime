@@ -9,8 +9,7 @@ Download and type:
 
 Or using pip:
 
-    pip3 install dateutil
-    pip3 install git+https://github.com/satagro/suntime.git
+    pip3 install suntime
 
 ## Usage
 
@@ -46,7 +45,7 @@ You can use the library to get UTC and local time sunrise and sunset times typin
 
 ## License
 
-Copyright © 2018 SatAgro Sp. z o.o. and contributors:
+Copyright © 2019 SatAgro Sp. z o.o. and contributors:
 
 * Krzysztof Stopa ([kstopa](https://github.com/kstopa))
 * Andrey Kobyshev ([yokotoka](https://github.com/yokotoka))
