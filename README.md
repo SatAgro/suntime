@@ -16,7 +16,6 @@ Or download and type:
 You can use the library to get UTC and local time sunrise and sunset times typing:
 
 ```python3
-
 import datetime
 from suntime import Sun, SunTimeException
 
@@ -49,7 +48,6 @@ try:
           format(abd, abd_sr.strftime('%H:%M'), abd_ss.strftime('%H:%M')))
 except SunTimeException as e:
     print("Error: {0}.".format(e))
-
 ```
 
 ## License
