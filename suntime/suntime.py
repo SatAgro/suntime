@@ -19,63 +19,67 @@ class Sun:
         self._lat = lat
         self._lon = lon
 
-    def get_sunrise_time(self, date=datetime.date.today()):
+    def get_sunrise_time(self, date=None):
         """
         Calculate the sunrise time for given date.
         :param lat: Latitude
         :param lon: Longitude
-        :param date: Reference date
+        :param date: Reference date. Today if not provided.
         :return: UTC sunrise datetime
         :raises: SunTimeException when there is no sunrise and sunset on given location and date
         """
+        date = datetime.date.today() if date is None else date
         sr = self._calc_sun_time(date, True)
         if sr is None:
             raise SunTimeException('The sun never rises on this location (on the specified date)')
         else:
             return sr
 
-    def get_local_sunrise_time(self, date=datetime.date.today(), local_time_zone=tz.tzlocal()):
+    def get_local_sunrise_time(self, date=None, local_time_zone=tz.tzlocal()):
         """
         Get sunrise time for local or custom time zone.
-        :param date: Reference date
+        :param date: Reference date. Today if not provided.
         :param local_time_zone: Local or custom time zone.
         :return: Local time zone sunrise datetime
         """
+        date = datetime.date.today() if date is None else date
         sr = self._calc_sun_time(date, True)
         if sr is None:
             raise SunTimeException('The sun never rises on this location (on the specified date)')
         else:
             return sr.astimezone(local_time_zone)
 
-    def get_sunset_time(self, date=datetime.date.today()):
+    def get_sunset_time(self, date=None):
         """
         Calculate the sunset time for given date.
         :param lat: Latitude
         :param lon: Longitude
-        :param date: Reference date
+        :param date: Reference date. Today if not provided.
         :return: UTC sunset datetime
         :raises: SunTimeException when there is no sunrise and sunset on given location and date.
         """
+        date = datetime.date.today() if date is None else date
         ss = self._calc_sun_time(date, False)
         if ss is None:
             raise SunTimeException('The sun never sets on this location (on the specified date)')
         else:
             return ss
 
-    def get_local_sunset_time(self, date=datetime.date.today(), local_time_zone=tz.tzlocal()):
+    def get_local_sunset_time(self, date=None, local_time_zone=tz.tzlocal()):
         """
         Get sunset time for local or custom time zone.
         :param date: Reference date
         :param local_time_zone: Local or custom time zone.
         :return: Local time zone sunset datetime
         """
+        date = datetime.date.today() if date is None else date
         ss = self._calc_sun_time(date, False)
         if ss is None:
             raise SunTimeException('The sun never sets on this location (on the specified date)')
         else:
             return ss.astimezone(local_time_zone)
 
-    def _calc_sun_time(self, date=datetime.date.today(), isRiseTime=True, zenith=90.8):
+    def _calc_sun_time(self, date, isRiseTime=True, zenith=90.8):
         """
         Calculate sunrise or sunset date.
         :param date: Reference date

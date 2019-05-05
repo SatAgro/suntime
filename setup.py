@@ -12,5 +12,5 @@ setup(name='suntime',
       copyright='Copyright 2019 SatAgro',
       license='LGPLv3',
       packages=['suntime'],
-      install_requires=['dateutil']
-      )
+      install_requires=['python-dateutil']
+)
