@@ -1,4 +1,4 @@
-
+import calendar
 import math
 import datetime
 from dateutil import tz
@@ -168,6 +168,14 @@ class Sun:
         if hr == 24:
             hr = 0
             day += 1
+            
+            if day > calendar.monthrange(year, month)[1]:
+                day = 1
+                month += 1
+
+                if month > 12:
+                    month = 1
+                    year += 1
 
         return datetime.datetime(year, month, day, hr, int(min), tzinfo=tz.tzutc())
 
