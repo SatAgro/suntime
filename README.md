@@ -57,6 +57,7 @@ Copyright © 2019 SatAgro Sp. z o.o. and contributors:
 * Krzysztof Stopa ([kstopa](https://github.com/kstopa))
 * Andrey Kobyshev ([yokotoka](https://github.com/yokotoka))
 * Matthias ([palto42](https://github.com/plato42))
+* Hadrien Bertrand ([hbertrand](https://github.com/hbertrand))
 
 
 This file is part of SunTime library for python (SunTime).
