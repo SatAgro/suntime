@@ -96,14 +96,14 @@ class Sun:
             UT += tz.utcoffset(date).total_seconds()/3600
 
             # 7c. rounding and impose range bounds
-            UT = _force_range(round(UT, 1), 24)
-            time_delta = datetime.timedelta(hours=round(UT, 1))
+            UT = _force_range(round(UT, 2), 24)
+            time_delta = datetime.timedelta(hours=UT)
             
             return datetime.datetime.combine(date, datetime.time(0, 0, tzinfo=tz)) + time_delta
         else:
             # 7c. rounding and impose range bounds
-            UT = _force_range(round(UT, 1), 24)
-            time_delta = datetime.timedelta(hours=round(UT, 1))
+            UT = _force_range(round(UT, 2), 24)
+            time_delta = datetime.timedelta(hours=UT)
 
             return datetime.datetime.combine(date, datetime.time(0, 0, tzinfo=UTC)) + time_delta
 
@@ -160,7 +160,6 @@ def _force_range(v, max):
         return v + max
     elif v >= max:
         return v - max
-
     return v
 
 if __name__ == '__main__':
