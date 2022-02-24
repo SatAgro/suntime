@@ -156,7 +156,7 @@ class Sun:
         UT = self._force_range(UT, 24)   # UTC time in decimal format (e.g. 23.23)
 
         #10. Return
-        hr = self._force_range(int(UT), 24)
+        hr = int(UT)
         min = round((UT - int(UT))*60, 0)
 
         return datetime.datetime.combine(date, datetime.time(0, 0, tzinfo=tz.tzutc())) + datetime.timedelta(hours=hr, minutes=min)
