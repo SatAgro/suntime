@@ -1,4 +1,3 @@
-import calendar
 import math
 import datetime
 from dateutil.tz import UTC
