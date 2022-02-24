@@ -19,6 +19,8 @@ class Sun:
         self._lat = lat
         self._lon = lon
 
+        self.lngHour = self._lon / 15
+
     def get_sunrise_time(self, date=None):
         """
         Calculate the sunrise time for given date.
@@ -99,12 +101,11 @@ class Sun:
         N = date.timetuple().tm_yday
 
         # 2. convert the longitude to hour value and calculate an approximate time
-        lngHour = self._lon / 15
 
         if isRiseTime:
-            t = N + ((6 - lngHour) / 24)
+            t = N + ((6 - self.lngHour) / 24)
         else: #sunset
-            t = N + ((18 - lngHour) / 24)
+            t = N + ((18 - self.lngHour) / 24)
 
         # 3. calculate the Sun's mean anomaly
         M = (0.9856 * t) - 3.289
@@ -151,7 +152,7 @@ class Sun:
         T = H + RA - (0.06571 * t) - 6.622
 
         #9. adjust back to UTC
-        UT = T - lngHour
+        UT = T - self.lngHour
         UT = self._force_range(UT, 24)   # UTC time in decimal format (e.g. 23.23)
 
         #10. Return
