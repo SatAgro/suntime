@@ -93,7 +93,7 @@ class Sun:
         
         if tz:
             # 7b. adjust back to local time
-            UT += tz.utcoffset(day).total_seconds()/3600
+            UT += tz.utcoffset(date).total_seconds()/3600
 
             # 7c. rounding and impose range bounds
             UT = _force_range(round(UT, 1), 24)
@@ -141,7 +141,6 @@ class Sun:
         T = H + RA - (0.06571 * t) - 6.622
 
         return T
-        # return datetime.timedelta(hours=round(UT, 1))
 
 def _f1_sunrise(N, lngHour):
     return N + ((6 - lngHour) / 24)
@@ -164,7 +163,7 @@ def _force_range(v, max):
 
     return v
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
     import datetime
     import pytz
     from suntime import Sun, SunTimeException
@@ -174,25 +173,25 @@ def _force_range(v, max):
     tz = pytz.timezone("Asia/Jakarta")
 
     day = datetime.datetime(2022, 4, 24)
-    print(day)
     print(tz.utcoffset(day))
 
     sun = Sun(latitude, longitude)
     try:
         print("")
-
-        # print(sun.get_sunrise_sunset_time())
+        print(datetime.datetime.now())
+        print()
         print(sun.get_sunrise_time())
         print(sun.get_sunset_time())
         print("")
         print(sun.get_sunrise_time(tz=tz))
         print(sun.get_sunset_time(tz=tz))
-
-        # On a special date in UTC
+        print("")
+        print(day)
+        print("")
         print(sun.get_sunrise_time(day))
         print(sun.get_sunset_time(day))
         print("")
-        print(sun.get_sunrise_time(tz=tz))
-        print(sun.get_sunset_time(tz=tz))
+        print(sun.get_sunrise_time(day, tz=tz))
+        print(sun.get_sunset_time(day, tz=tz))
     except SunTimeException as e:
         print("Error: {0}".format(e))
