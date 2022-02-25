@@ -23,44 +23,47 @@ class Sun:
 
     def get_sunrise_time(self, date=None, tz=None):
         """
-        Calculate the sunrise time for given date.
-        :param lat: Latitude
-        :param lon: Longitude
-        :param date: Reference date. Today if not provided.
-        :return: UTC sunrise datetime
-        :raises: SunTimeException when there is no sunrise and sunset on given location and date
+        :param date: Reference date. datetime.now() if not provided.
+        :param tz: pytz object with .tzinfo() or None
+        :return: sunrise datetime.
+        :raises: SunTimeException when there is no sunrise and sunset on given location and date.
         """
         date = datetime.datetime.now() if date is None else date
-        sr = self._calc_sun_time(date, tz=tz, isRiseTime=True)
-        if sr is None:
+        time_delta = self.get_sun_timedelta(date, tz=tz, isRiseTime=True)
+        if time_delta is None:
             raise SunTimeException('The sun never rises on this location (on the specified date)')
         else:
-            return sr
+            if tz:
+                return datetime.datetime.combine(date, datetime.time(0, 0, tzinfo=tz)) + time_delta
+            else:
+                return datetime.datetime.combine(date, datetime.time(0, 0, tzinfo=UTC)) + time_delta
 
     def get_sunset_time(self, date=None, tz=None):
         """
         Calculate the sunset time for given date.
-        :param lat: Latitude
-        :param lon: Longitude
-        :param date: Reference date. Today if not provided.
-        :return: UTC sunset datetime
+        :param date: Reference date. datetime.now() if not provided.
+        :param tz: pytz object with .tzinfo() or None
+        :return: sunset datetime.
         :raises: SunTimeException when there is no sunrise and sunset on given location and date.
         """
         date = datetime.datetime.now() if date is None else date
-        ss = self._calc_sun_time(date, tz=tz, isRiseTime=False)
-        if ss is None:
-            raise SunTimeException('The sun never sets on this location (on the specified date)')
+        time_delta = self.get_sun_timedelta(date, tz=tz, isRiseTime=False)
+        if time_delta is None:
+            raise SunTimeException('The sun never rises on this location (on the specified date)')
         else:
-            return ss
+            if tz:
+                return datetime.datetime.combine(date, datetime.time(0, 0, tzinfo=tz)) + time_delta
+            else:
+                return datetime.datetime.combine(date, datetime.time(0, 0, tzinfo=UTC)) + time_delta
 
-    def _calc_sun_time(self, date, tz, isRiseTime=True, zenith=90.8):
+    def get_sun_timedelta(self, date, tz, isRiseTime=True, zenith=90.8):
         """
         Calculate sunrise or sunset date.
         :param date: Reference date
+        :param tz: pytz object with .tzinfo() or None
         :param isRiseTime: True if you want to calculate sunrise time.
         :param zenith: Sun reference zenith
-        :return: UTC sunset or sunrise datetime
-        :raises: SunTimeException when there is no sunrise and sunset on given location and date
+        :return: timedelta showing hour, minute, and second of sunrise or sunset
         """
 
         # 1. first get the day of the year
@@ -120,17 +123,11 @@ class Sun:
             # 7b. adjust back to local time
             UT += tz.utcoffset(date).total_seconds()/3600
 
-            # 7c. rounding and impose range bounds
-            UT = self._force_range(round(UT, 2), 24)
-            time_delta = datetime.timedelta(hours=UT)
-            
-            return datetime.datetime.combine(date, datetime.time(0, 0, tzinfo=tz)) + time_delta
-        else:
-            # 7c. rounding and impose range bounds
-            UT = self._force_range(round(UT, 2), 24)
-            time_delta = datetime.timedelta(hours=UT)
-
-            return datetime.datetime.combine(date, datetime.time(0, 0, tzinfo=UTC)) + time_delta
+        # 7c. rounding and impose range bounds
+        UT = self._force_range(round(UT, 2), 24)
+        
+        # 8. return timedelta
+        return datetime.timedelta(hours=UT)
 
     @staticmethod
     def _force_range(v, max):
