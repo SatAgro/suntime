@@ -15,18 +15,22 @@ class Sun:
     Approximated calculation of sunrise and sunset datetimes. Adapted from:
     https://stackoverflow.com/questions/19615350/calculate-sunrise-and-sunset-times-for-a-given-gps-coordinate-within-postgresql
     """
-    def __init__(self, lat, lon):
+    def __init__(self, lat, lon, zenith=90.8):
+        """
+        :param lat(float): Latitude
+        :param lon(float): Longitude
+        :param zenith(float): zenith default position (degrees)
+        """
         self._lat = lat
         self._lon = lon
+        self._ZENITH = zenith
 
     def get_sunrise_time(self, date=None):
         """
         Calculate the sunrise time for given date.
-        :param lat: Latitude
-        :param lon: Longitude
         :param date: Reference date. Today if not provided.
-        :return: UTC sunrise datetime
         :raises: SunTimeException when there is no sunrise and sunset on given location and date
+        :return: UTC sunrise datetime
         """
         return self._calc_sun_time(date, True)
 
@@ -35,6 +39,7 @@ class Sun:
         Get sunrise time for local or custom time zone.
         :param date: Reference date. Today if not provided.
         :param local_time_zone: Local or custom time zone.
+        :raises: SunTimeException when there is no sunrise and sunset on given location and date.
         :return: Local time zone sunrise datetime
         """
         return self._calc_sun_time(date, True, timezone=local_time_zone)
@@ -42,8 +47,6 @@ class Sun:
     def get_sunset_time(self, date=None):
         """
         Calculate the sunset time for given date.
-        :param lat: Latitude
-        :param lon: Longitude
         :param date: Reference date. Today if not provided.
         :return: UTC sunset datetime
         :raises: SunTimeException when there is no sunrise and sunset on given location and date.
@@ -52,23 +55,140 @@ class Sun:
 
     def get_local_sunset_time(self, date=None, local_time_zone=tz.tzlocal()):
         """
-        Get sunset time for local or custom time zone.
-        :param date: Reference date
+        Get local sunset time for local or custom time zone.
+        :param date: Reference date. Today if not provided.
         :param local_time_zone: Local or custom time zone.
-        :return: Local time zone sunset datetime
+        :raises: SunTimeException when there is no unrise and sunset on given location and date.
+        :return: Local time zone sunrise datetime
         """
         return self._calc_sun_time(date, False, timezone=local_time_zone)
 
-    def _calc_sun_time(self, date, isRiseTime=True, zenith=90.8, timezone=None):
+    def get_civil_dawn_time(self, date=None):
+        """
+        Get civil dawn time for local or custom time zone.
+        :param date: Reference date. Today if not provided.
+        :raises: SunTimeException when there is civil dawn on given location and date.
+        :return: UTC sunset datetime
+        """
+        return self._calc_sun_time(date, True, offset=6)
+
+    def get_local_civil_dawn_time(self, date=None, local_time_zone=tz.tzlocal()):
+        """
+        Get local civil dawn time for local or custom time zone.
+        :param date: Reference date. Today if not provided.
+        :param local_time_zone: Local or custom time zone.
+        :raises: SunTimeException when there is no civil danw on given location and date.
+        :return: Local time zone sunrise datetime
+        """
+        return self._calc_sun_time(date, True, offset=6, timezone=local_time_zone)
+
+    def get_civil_dusk_time(self, date=None):
+        """
+        Calculate the civil dusk time for given date.
+        :param date: Reference date. Today if not provided.
+        :raises: SunTimeException when there is no civil dusk on given location and date
+        :return: UTC civil dusk datetime
+        """
+        return self._calc_sun_time(date, False, offset=6)
+
+    def get_local_civil_dusk_time(self, date=None, local_time_zone=tz.tzlocal()):
+        """
+        Get local civil dusk time for local or custom time zone.
+        :param date: Reference date. Today if not provided.
+        :param local_time_zone: Local or custom time zone.
+        :raises: SunTimeException when there is no civil dusk on given location and date.
+        :return: Local time zone sunrise datetime
+        """
+        return self._calc_sun_time(date, False, offset=6, timezone=local_time_zone)
+
+    def get_nautical_dawn_time(self, date=None):
+        """
+        Calculate the nautical dawn time for given date.
+        :param date: Reference date. Today if not provided.
+        :raises: SunTimeException when there is no nautical dawn on given location and date
+        :return: UTC nautical dawn datetime
+        """
+        return self._calc_sun_time(date, True, offset=12)
+
+    def get_local_nautical_dawn_time(self, date=None, local_time_zone=tz.tzlocal()):
+        """
+        Get local nautical dawn time for local or custom time zone.
+        :param date: Reference date. Today if not provided.
+        :param local_time_zone: Local or custom time zone.
+        :raises: SunTimeException when there is no nautical dawn on given location and date.
+        :return: Local time zone sunrise datetime
+        """
+        return self._calc_sun_time(date, True, offset=12, timezone=local_time_zone)
+
+    def get_nautical_dusk_time(self, date=None):
+        """
+        Calculate the nautical dusk time for given date.
+        :param date: Reference date. Today if not provided.
+        :raises: SunTimeException when there is no nautical dusk on given location and date
+        :return: UTC nautical dusk datetime
+        """
+        return self._calc_sun_time(date, False, offset=12)
+
+    def get_local_nautical_dusk_time(self, date=None, local_time_zone=tz.tzlocal()):
+        """
+        Get local nautical dusk time for local or custom time zone.
+        :param date: Reference date. Today if not provided.
+        :param local_time_zone: Local or custom time zone.
+        :raises: SunTimeException when there is no nautical dusk on given location and date.
+        :return: Local time zone sunrise datetime
+        """
+        return self._calc_sun_time(date, False, offset=12, timezone=local_time_zone)
+
+    def get_astronomical_dawn_time(self, date=None):
+        """
+        Calculate the astronomical dawn time for given date.
+        :param date: Reference date. Today if not provided.
+        :raises: SunTimeException when there is no astronomical dawn on given location and date
+        :return: UTC astronomical dawn datetime
+        """
+        return self._calc_sun_time(date, True, offset=18)
+
+    def get_local_astronomical_dawn_time(self, date=None, local_time_zone=tz.tzlocal()):
+        """
+        Get local astronomical dawn time for local or custom time zone.
+        :param date: Reference date. Today if not provided.
+        :param local_time_zone: Local or custom time zone.
+        :raises: SunTimeException when there is no astronomical dawn on given location and date.
+        :return: Local time zone sunrise datetime
+        """
+        return self._calc_sun_time(date, True, offset=18, timezone=local_time_zone)
+
+    def get_astronomical_dusk_time(self, date=None):
+        """
+        Calculate the astronomical dusk time for given date.
+        :param date: Reference date. Today if not provided.
+        :raises: SunTimeException when there is no astronomical dusk on given location and date
+        :return: UTC astronomical dusk datetime
+        """
+        return self._calc_sun_time(date, False, offset=18)
+
+    def get_local_astronomical_dusk_time(self, date=None, local_time_zone=tz.tzlocal()):
+        """
+        Get local astronomical dusk time for local or custom time zone.
+        :param date: Reference date. Today if not provided.
+        :param local_time_zone: Local or custom time zone.
+        :raises: SunTimeException when there is no astronomical dusk on given location and date.
+        :return: Local time zone sunrise datetime
+        """
+        return self._calc_sun_time(date, False, offset=18, timezone=local_time_zone)
+
+    def _calc_sun_time(self, date, isRiseTime=True, offset=None, timezone=None):
         """
         Calculate sunrise or sunset date.
         :param date: Reference date
         :param isRiseTime: True if you want to calculate sunrise time.
-        :param zenith: Sun reference zenith
-        :return: UTC sunset or sunrise datetime
-        :raises: SunTimeException when there is no sunrise and sunset on given location and date
+        :param offset: Dawn/dusk offset relative to the Sun reference zenith
+        :param local_time_zone: Local or custom time zone.
+        :return: UTC sunset or sunrise datetime if no local_timezone specified.
+        :raises: SunTimeException when there is no dawn/dusk on given location and date
         """
         date = datetime.date.today() if date is None else date
+        zenith = self._ZENITH if offset is None else (self._ZENITH + (+1 * offset))
         # isRiseTime == False, returns sunsetTime
         day = date.day
         month = date.month
