@@ -48,6 +48,22 @@ try:
           format(abd, abd_sr.strftime('%H:%M'), abd_ss.strftime('%H:%M')))
 except SunTimeException as e:
     print("Error: {0}.".format(e))
+
+# if you need any different twilight (https://www.timeanddate.com/astronomy/different-types-twilight.html)
+# you can use their respective methods
+ 
+print("---------- DAWN ----------")
+
+print(sun.get_civil_dawn_time())
+print(sun.get_nautical_dawn_time()))
+print(sun.get_astronomical_dawn_time())
+
+
+print("---------- DUSK ----------")
+
+print(sun.get_civil_dusk_time())
+print(sun.get_nautical_dusk_time())
+print(sun.get_astronomical_dusk_time())
 ```
 
 ## License
