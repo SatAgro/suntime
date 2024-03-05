@@ -51,6 +51,16 @@ except SunTimeException as e:
     print("Error: {0}.".format(e))
 ```
 
+## Testing
+
+To run the tests, type:
+
+> pytest tests.py
+
+For linting checks, type:
+
+> flake8 .
+
 ## License
 
 Copyright © 2024 [SatAgro Sp. z o.o.](https://satagro.pl) and our awesome contributors:
