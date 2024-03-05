@@ -5,3 +5,4 @@ dist/
 example.py
 suntime.egg-info/
 suntime/__pycache__/
+__pycache__/
