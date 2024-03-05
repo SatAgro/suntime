@@ -17,12 +17,13 @@ You can use the library to get UTC and local time sunrise and sunset times typin
 
 ```python3
 import datetime
+from dateutil import tz
 from suntime import Sun, SunTimeException
 
-latitude = 51.21
-longitude = 21.01
+warsaw_lat = 51.21
+warsaw_lon = 21.01
 
-sun = Sun(latitude, longitude)
+sun = Sun(warsaw_lat, warsaw_lon)
 
 # Get today's sunrise and sunset in UTC
 today_sr = sun.get_sunrise_time()
@@ -32,8 +33,8 @@ print('Today at Warsaw the sun raised at {} and get down at {} UTC'.
 
 # On a special date in your machine's local time zone
 abd = datetime.date(2014, 10, 3)
-abd_sr = sun.get_local_sunrise_time(abd)
-abd_ss = sun.get_local_sunset_time(abd)
+abd_sr = sun.get_sunrise_time(abd, tz.gettz('Europe/Warsaw'))
+abd_ss = sun.get_sunset_time(abd, tz.gettz('Europe/Warsaw'))
 print('On {} the sun at Warsaw raised at {} and get down at {}.'.
       format(abd, abd_sr.strftime('%H:%M'), abd_ss.strftime('%H:%M')))
 
@@ -42,8 +43,8 @@ latitude = 87.55
 longitude = 0.1
 sun = Sun(latitude, longitude)
 try:
-    abd_sr = sun.get_local_sunrise_time(abd)
-    abd_ss = sun.get_local_sunset_time(abd)
+    abd_sr = sun.get_sunrise_time(abd)
+    abd_ss = sun.get_sunset_time(abd)
     print('On {} at somewhere in the north the sun raised at {} and get down at {}.'.
           format(abd, abd_sr.strftime('%H:%M'), abd_ss.strftime('%H:%M')))
 except SunTimeException as e:
@@ -52,13 +53,15 @@ except SunTimeException as e:
 
 ## License
 
-Copyright © 2019 SatAgro Sp. z o.o. and contributors:
+Copyright © 2024 [SatAgro Sp. z o.o.](https://satagro.pl) and our awesome contributors:
 
-* Krzysztof Stopa ([kstopa](https://github.com/kstopa))
 * Andrey Kobyshev ([yokotoka](https://github.com/yokotoka))
-* Matthias ([palto42](https://github.com/plato42))
 * Hadrien Bertrand ([hbertrand](https://github.com/hbertrand))
-
+* Ingo Randolf ([i-n-g-o](https://github.com/i-n-g-o))
+* John Vandenberg ([jayvdb](https://github.com/jayvdb))
+* Krzysztof Stopa ([kstopa](https://github.com/kstopa))
+* Matthias ([palto42](https://github.com/plato42))
+* Muhammad Yasirroni ([yasirroni](https://github.com/yasirroni))
 
 This file is part of SunTime library for python (SunTime).
 
