@@ -31,4 +31,4 @@ jobs:
         flake8 .
     - name: Run Tests
       run: |
-        pytest
+        pytest tests.py
