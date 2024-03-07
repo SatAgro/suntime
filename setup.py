@@ -10,9 +10,10 @@ with open(path.join(this_directory, 'README.md')) as f:
     long_description = f.read()
 
 setup(name='suntime',
-      version='1.3.0',
+      version='1.3.1',
       description='Simple sunset and sunrise time calculation python library',
       long_description=long_description,
+      long_description_content_type='text/markdown',
       author='Krzysztof Stopa',
       url='https://github.com/SatAgro/suntime',
       copyright='Copyright 2024 SatAgro',

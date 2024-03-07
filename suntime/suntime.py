@@ -132,10 +132,8 @@ class Sun:
 
         # 7c. rounding and impose range bounds
         UT = round(UT, 2)
-        print("UT 1 {}".format(UT))
         if is_rise_time:
             UT = self._force_range(UT, 24)
-        print(UT)
 
         # 8. return timedelta
         return timedelta(hours=UT)
