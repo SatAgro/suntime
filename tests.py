@@ -1,5 +1,5 @@
 import unittest
-from datetime import datetime
+from datetime import datetime, date
 from dateutil import tz
 
 from suntime import Sun, SunTimeException
@@ -46,6 +46,11 @@ class TestWestSun(unittest.TestCase):
         local_sunset = self.sun.get_local_sunset_time(datetime(2024, 3, 11), tz.gettz('America/Los_Angeles'))
         self.assertEqual(utc_sunset, expected_sunset)
         self.assertEqual(local_sunset, expected_sunset)
+        # Check with no params
+        utc_default_sunrise = self.sun.get_sunrise_time()
+        local_default_sunrise = self.sun.get_local_sunrise_time()
+        self.assertEqual(utc_default_sunrise.date(), datetime.now().date())
+        self.assertEqual(local_default_sunrise.date(), datetime.now().date())
 
 
 class TestEastSun(unittest.TestCase):
