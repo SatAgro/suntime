@@ -32,7 +32,7 @@ print('Today at Warsaw the sun raised at {} and get down at {} UTC'.
       format(today_sr.strftime('%H:%M'), today_ss.strftime('%H:%M')))
 
 # On a special date in your machine's local time zone
-abd = datetime.date(2014, 10, 3)
+abd = datetime.datetime(2014, 10, 3)
 abd_sr = sun.get_sunrise_time(abd, tz.gettz('Europe/Warsaw'))
 abd_ss = sun.get_sunset_time(abd, tz.gettz('Europe/Warsaw'))
 print('On {} the sun at Warsaw raised at {} and get down at {}.'.
