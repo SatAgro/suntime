@@ -1,6 +1,6 @@
 import math
 import warnings
-from datetime import date, datetime, timedelta, time, timezone
+from datetime import datetime, timedelta, time, timezone
 
 
 # CONSTANT
@@ -24,7 +24,7 @@ class Sun:
 
         self.lngHour = self._lon / 15
 
-    def get_sunrise_time(self, at_date=date.today(), time_zone=timezone.utc):
+    def get_sunrise_time(self, at_date=datetime.now(), time_zone=timezone.utc):
         """
         :param at_date: Reference date. datetime.now() if not provided.
         :param time_zone: pytz object with .tzinfo() or None
@@ -37,7 +37,7 @@ class Sun:
         else:
             return datetime.combine(at_date, time(tzinfo=time_zone)) + time_delta
 
-    def get_sunset_time(self, at_date=date.today(), time_zone=timezone.utc):
+    def get_sunset_time(self, at_date=datetime.now(), time_zone=timezone.utc):
         """
         Calculate the sunset time for given date.
         :param at_date: Reference date. datetime.now() if not provided.
@@ -51,13 +51,14 @@ class Sun:
         else:
             return datetime.combine(at_date, time(tzinfo=time_zone)) + time_delta
 
-    def get_local_sunrise_time(self, at_date, time_zone):
+    def get_local_sunrise_time(self, at_date=datetime.now(), time_zone=None):
         """ DEPRECATED: Use get_sunrise_time() instead. """
         warnings.warn("get_local_sunrise_time is deprecated and will be removed in future versions."
                       "Use get_sunrise_time with proper time zone", DeprecationWarning)
+
         return self.get_sunrise_time(at_date, time_zone)
 
-    def get_local_sunset_time(self, at_date, time_zone):
+    def get_local_sunset_time(self, at_date=datetime.now(), time_zone=None):
         """ DEPRECATED: Use get_sunset_time() instead. """
         warnings.warn("get_local_sunset_time is deprecated and will be removed in future versions."
                       "Use get_sunset_time with proper time zone.", DeprecationWarning)
@@ -72,6 +73,10 @@ class Sun:
         :param zenith: Sun reference zenith
         :return: timedelta showing hour, minute, and second of sunrise or sunset
         """
+
+        # If not set get local timezone from datetime
+        if time_zone is None:
+            time_zone = datetime.now().tzinfo
 
         # 1. first get the day of the year
         N = at_date.timetuple().tm_yday
