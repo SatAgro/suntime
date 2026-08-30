@@ -59,13 +59,13 @@ class TestEastSun(unittest.TestCase):
 
     def test_get_sunrise_time(self):
         # Sunrise in Tokyo
-        expected_utc_sunrise = datetime(2024, 3, 11, 20, 57, 36, tzinfo=tz.UTC)
-        expected_local_sunrise = datetime(2024, 3, 11, 20, 57, 36, tzinfo=tz.gettz("Asia/Tokio"))
+        expected_utc_sunrise = datetime(2024, 3, 10, 20, 57, 36, tzinfo=tz.UTC)
+        expected_local_sunrise = datetime(2024, 3, 11, 5, 57, 36, tzinfo=tz.gettz("Asia/Tokyo"))
 
         utc_sunrise = self.sun.get_sunrise_time(datetime(2024, 3, 11))
         self.assertEqual(utc_sunrise, expected_utc_sunrise)
 
-        local_time_sunrise = self.sun.get_local_sunrise_time(datetime(2024, 3, 11), time_zone=tz.gettz("Asia/Tokio"))
+        local_time_sunrise = self.sun.get_local_sunrise_time(datetime(2024, 3, 11), time_zone=tz.gettz("Asia/Tokyo"))
         self.assertEqual(local_time_sunrise, expected_local_sunrise)
 
 

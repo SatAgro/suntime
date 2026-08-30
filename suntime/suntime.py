@@ -87,7 +87,7 @@ class Sun:
 
         # If not set get local timezone from datetime
         if time_zone is None:
-            time_zone = datetime.now().tzinfo
+            time_zone = datetime.now().astimezone().tzinfo
 
         # 1. first get the day of the year
         N = at_date.timetuple().tm_yday
@@ -142,16 +142,22 @@ class Sun:
         # 7a. adjust back to UTC
         UT = T - self.lngHour
 
-        if time_zone:
-            # 7b. adjust back to local time
-            UT += time_zone.utcoffset(at_date).total_seconds() / 3600
-
-        # 7c. rounding and impose range bounds
+        # 7b. Round and normalize the UTC clock time. Keep track of its date
+        # relative to the requested solar date; western sunsets can occur on
+        # the following UTC date, while eastern sunrises can occur on the
+        # previous UTC date.
         UT = round(UT, 2)
-        UT = self._force_range(UT, 24)  # Apply to both sunrise and sunset
+        UT = self._force_range(UT, 24)
+        utc_day_offset = -math.floor((UT + self.lngHour) / 24)
+
+        utc_datetime = (
+            datetime.combine(at_date, time(tzinfo=timezone.utc))
+            + timedelta(days=utc_day_offset, hours=UT)
+        )
+        timezone_offset = utc_datetime.astimezone(time_zone).utcoffset().total_seconds() / 3600
 
         # 8. return timedelta
-        return timedelta(hours=UT)
+        return timedelta(days=utc_day_offset, hours=UT + timezone_offset)
 
     @staticmethod
     def _force_range(v, max):
