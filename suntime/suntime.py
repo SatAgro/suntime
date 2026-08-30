@@ -148,8 +148,7 @@ class Sun:
 
         # 7c. rounding and impose range bounds
         UT = round(UT, 2)
-        if is_rise_time:
-            UT = self._force_range(UT, 24)
+        UT = self._force_range(UT, 24)  # Apply to both sunrise and sunset
 
         # 8. return timedelta
         return timedelta(hours=UT)
