@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime
 from dateutil import tz
 
-from suntime import Sun, SunTimeException
+from suntime import Sun, SunTimeException, MidnightSunException, PolarNightException
 
 _SF_LAT = 37.7749
 _SF_LON = -122.4194
@@ -92,13 +92,27 @@ class TestNoSun(unittest.TestCase):
 
     def test_get_sunrise_time(self):
         # Test for no sunrise
-        with self.assertRaises(SunTimeException):
-            self.sun.get_sunrise_time(datetime(2024, 12, 21))  # Winter solstice in the northern hemisphere
+        # Winter solstice in the northern hemisphere
+        d = datetime(2024, 12, 21)
+        with self.assertRaisesRegex(SunTimeException, 'The sun'):
+            self.sun.get_sunrise_time(d)
+
+        # Should throw specific PolarNightException which is derived
+        # from SunTimeException
+        with self.assertRaisesRegex(PolarNightException, 'The sun'):
+            self.sun.get_sunrise_time(d)
 
     def test_get_sunset_time(self):
         # Test for no sunset
-        with self.assertRaises(SunTimeException):
-            self.sun.get_sunset_time(datetime(2024, 6, 21))  # Summer solstice in the northern hemisphere
+        # Summer solstice in the northern hemisphere
+        d = datetime(2024, 6, 21)
+        with self.assertRaisesRegex(SunTimeException, 'The sun'):
+            self.sun.get_sunset_time(d)
+
+        # Should throw specific MidnightSunException which is derived
+        # from SunTimeException
+        with self.assertRaisesRegex(MidnightSunException, 'The sun'):
+            self.sun.get_sunset_time(d)
 
 
 if __name__ == '__main__':

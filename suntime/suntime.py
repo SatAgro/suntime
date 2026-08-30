@@ -8,9 +8,21 @@ TO_RAD = math.pi/180.0
 
 
 class SunTimeException(Exception):
+    pass
 
-    def __init__(self, message):
-        super(SunTimeException, self).__init__(message)
+
+class MidnightSunException(SunTimeException):
+    """
+    Sun is always up (24h of daylight)
+    """
+    pass
+
+
+class PolarNightException(SunTimeException):
+    """
+    Sun is always down (0h of daylight)
+    """
+    pass
 
 
 class Sun:
@@ -32,10 +44,7 @@ class Sun:
         :raises: SunTimeException when there is no sunrise and sunset on given location and date.
         """
         time_delta = self.get_sun_timedelta(at_date, time_zone=time_zone, is_rise_time=True)
-        if time_delta is None:
-            raise SunTimeException('The sun never rises on this location (on the specified date)')
-        else:
-            return datetime.combine(at_date, time(tzinfo=time_zone)) + time_delta
+        return datetime.combine(at_date, time(tzinfo=time_zone)) + time_delta
 
     def get_sunset_time(self, at_date=datetime.now(), time_zone=timezone.utc):
         """
@@ -46,10 +55,7 @@ class Sun:
         :raises: SunTimeException when there is no sunrise and sunset on given location and date.
         """
         time_delta = self.get_sun_timedelta(at_date, time_zone=time_zone, is_rise_time=False)
-        if time_delta is None:
-            raise SunTimeException('The sun never rises on this location (on the specified date)')
-        else:
-            return datetime.combine(at_date, time(tzinfo=time_zone)) + time_delta
+        return datetime.combine(at_date, time(tzinfo=time_zone)) + time_delta
 
     def get_local_sunrise_time(self, at_date=datetime.now(), time_zone=None):
         """ DEPRECATED: Use get_sunrise_time() instead. """
@@ -102,9 +108,9 @@ class Sun:
         cosH = (math.cos(TO_RAD*zenith) - (sinDec * math.sin(TO_RAD*self._lat))) / (cosDec * math.cos(TO_RAD*self._lat))
 
         if cosH > 1:
-            return None     # The sun never rises on this location (on the specified date)
+            raise PolarNightException("The sun is always down on this location on the specified date")
         if cosH < -1:
-            return None     # The sun never sets on this location (on the specified date)
+            raise MidnightSunException("The sun is always up on this location on the specified date")
 
         # 4c. finish calculating H and convert into hours
         if is_rise_time:
