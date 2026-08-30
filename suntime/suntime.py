@@ -36,17 +36,20 @@ class Sun:
 
         self.lngHour = self._lon / 15
 
-    def get_sunrise_time(self, at_date=datetime.now(), time_zone=timezone.utc):
+    def get_sunrise_time(self, at_date=None, time_zone=timezone.utc):
         """
         :param at_date: Reference date. datetime.now() if not provided.
         :param time_zone: pytz object with .tzinfo() or None
         :return: sunrise datetime.
         :raises: SunTimeException when there is no sunrise and sunset on given location and date.
         """
+        if at_date is None:
+            at_date = datetime.now()
+
         time_delta = self.get_sun_timedelta(at_date, time_zone=time_zone, is_rise_time=True)
         return datetime.combine(at_date, time(tzinfo=time_zone)) + time_delta
 
-    def get_sunset_time(self, at_date=datetime.now(), time_zone=timezone.utc):
+    def get_sunset_time(self, at_date=None, time_zone=timezone.utc):
         """
         Calculate the sunset time for given date.
         :param at_date: Reference date. datetime.now() if not provided.
@@ -54,17 +57,19 @@ class Sun:
         :return: sunset datetime.
         :raises: SunTimeException when there is no sunrise and sunset on given location and date.
         """
+        if at_date is None:
+            at_date = datetime.now()
         time_delta = self.get_sun_timedelta(at_date, time_zone=time_zone, is_rise_time=False)
         return datetime.combine(at_date, time(tzinfo=time_zone)) + time_delta
 
-    def get_local_sunrise_time(self, at_date=datetime.now(), time_zone=None):
+    def get_local_sunrise_time(self, at_date=None, time_zone=None):
         """ DEPRECATED: Use get_sunrise_time() instead. """
         warnings.warn("get_local_sunrise_time is deprecated and will be removed in future versions."
                       "Use get_sunrise_time with proper time zone", DeprecationWarning)
 
         return self.get_sunrise_time(at_date, time_zone)
 
-    def get_local_sunset_time(self, at_date=datetime.now(), time_zone=None):
+    def get_local_sunset_time(self, at_date=None, time_zone=None):
         """ DEPRECATED: Use get_sunset_time() instead. """
         warnings.warn("get_local_sunset_time is deprecated and will be removed in future versions."
                       "Use get_sunset_time with proper time zone.", DeprecationWarning)
