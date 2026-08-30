@@ -1,4 +1,5 @@
 # SunTime
+
 Simple sunset and sunrise time calculation python library.
 
 ## Installation
@@ -59,19 +60,24 @@ To run the tests, type:
 
 For linting checks, type:
 
-> flake8 .
+> ruff check .
 
-## License
+## Authors
 
-Copyright © 2024 [SatAgro Sp. z o.o.](https://satagro.pl) and our awesome contributors:
+Started by [SatAgro Sp. z o.o.](https://satagro.pl) and improved by our awesome contributors:
 
 * Andrey Kobyshev ([yokotoka](https://github.com/yokotoka))
 * Hadrien Bertrand ([hbertrand](https://github.com/hbertrand))
 * Ingo Randolf ([i-n-g-o](https://github.com/i-n-g-o))
+* Jakob R.F. ([rfjakob](https://github.com/rfjakob))
 * John Vandenberg ([jayvdb](https://github.com/jayvdb))
 * Krzysztof Stopa ([kstopa](https://github.com/kstopa))
 * Matthias ([palto42](https://github.com/plato42))
 * Muhammad Yasirroni ([yasirroni](https://github.com/yasirroni))
+* M. Amrehn ([mamrehn](https://github.com/mamrehn))
+* Sijmen Huizenga ([sijmen](https://github.com/SijmenHuizenga))
+
+## License
 
 This file is part of SunTime library for python (SunTime).
 
@@ -79,4 +85,4 @@ SunTime is free software: you can redistribute it and/or modify it under the ter
 
 SunTime is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public License along with CAMS tools. If not, see http://www.gnu.org/licenses/.
+You should have received a copy of the GNU Lesser General Public License along with CAMS tools. If not, see <http://www.gnu.org/licenses/>.

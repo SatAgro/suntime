@@ -1,5 +1,6 @@
 .idea/
 .eggs/
+.venv/
 build/
 dist/
 example.py
