@@ -8,6 +8,7 @@ dynamic = ["version"]
 description = "Simple sunset and sunrise time calculation python library"
 readme = "README.md"
 license = { text = "LGPLv3" }
+requires-python = ">=3.9"
 authors = [
   { name = "Andrey Kobyshev" },
   { name = "Hadrien Bertrand" },
@@ -20,7 +21,7 @@ authors = [
   { name = "M. Amrehn" },
   { name = "Sijmen Huizenga" },
 ]
-dependencies = ["python-dateutil>=2.1.0"]
+dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest", "ruff"]

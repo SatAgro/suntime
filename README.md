@@ -18,7 +18,7 @@ You can use the library to get UTC and local time sunrise and sunset times typin
 
 ```python3
 import datetime
-from dateutil import tz
+from zoneinfo import ZoneInfo
 from suntime import Sun, SunTimeException
 
 warsaw_lat = 51.21
@@ -34,8 +34,8 @@ print('Today at Warsaw the sun raised at {} and get down at {} UTC'.
 
 # On a special date in your machine's local time zone
 abd = datetime.datetime(2014, 10, 3)
-abd_sr = sun.get_sunrise_time(abd, tz.gettz('Europe/Warsaw'))
-abd_ss = sun.get_sunset_time(abd, tz.gettz('Europe/Warsaw'))
+abd_sr = sun.get_sunrise_time(abd, ZoneInfo('Europe/Warsaw'))
+abd_ss = sun.get_sunset_time(abd, ZoneInfo('Europe/Warsaw'))
 print('On {} the sun at Warsaw raised at {} and get down at {}.'.
       format(abd, abd_sr.strftime('%H:%M'), abd_ss.strftime('%H:%M')))
 

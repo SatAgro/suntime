@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime, timedelta, timezone
-from dateutil import tz
+from zoneinfo import ZoneInfo
 
 from suntime import Sun, SunTimeException, MidnightSunException, PolarNightException
 
@@ -31,25 +31,25 @@ class TestWestSun(unittest.TestCase):
 
     def test_get_sunrise_time(self):
         # Sunrise in San Francisco (winter time)
-        expected_sunrise = datetime(2024, 3, 11, 14, 25, 48, tzinfo=tz.UTC)  # 6:26 AM local time
+        expected_sunrise = datetime(2024, 3, 11, 14, 25, 48, tzinfo=timezone.utc)  # 6:26 AM local time
         utc_sunrise = self.sun.get_sunrise_time(datetime(2024, 3, 11))
-        local_sunrise = self.sun.get_local_sunrise_time(datetime(2024, 3, 11), tz.gettz("America/Los_Angeles"))
+        local_sunrise = self.sun.get_local_sunrise_time(datetime(2024, 3, 11), ZoneInfo("America/Los_Angeles"))
         # Assert time matches 14:40 UTC
         self.assertEqual(utc_sunrise, expected_sunrise)
         self.assertEqual(local_sunrise, expected_sunrise)
         # Sunrise in San Francisco (summer time)
-        expected_sunrise = datetime(2024, 6, 20, 12, 48, 0, tzinfo=tz.UTC)
+        expected_sunrise = datetime(2024, 6, 20, 12, 48, 0, tzinfo=timezone.utc)
         utc_sunrise = self.sun.get_sunrise_time(datetime(2024, 6, 20))
-        local_sunrise = self.sun.get_local_sunrise_time(datetime(2024, 6, 20), tz.gettz("America/Los_Angeles"))
+        local_sunrise = self.sun.get_local_sunrise_time(datetime(2024, 6, 20), ZoneInfo("America/Los_Angeles"))
         # Assert time matches 13:25 UTC
         self.assertEqual(utc_sunrise, expected_sunrise)
         self.assertEqual(local_sunrise, expected_sunrise)
 
     def test_get_sunset_time(self):
         # Test sunset in San Francisco
-        expected_sunset = datetime(2024, 3, 12, 2, 13, 48, tzinfo=tz.tzutc())
+        expected_sunset = datetime(2024, 3, 12, 2, 13, 48, tzinfo=timezone.utc)
         utc_sunset = self.sun.get_sunset_time(datetime(2024, 3, 11))
-        local_sunset = self.sun.get_local_sunset_time(datetime(2024, 3, 11), tz.gettz("America/Los_Angeles"))
+        local_sunset = self.sun.get_local_sunset_time(datetime(2024, 3, 11), ZoneInfo("America/Los_Angeles"))
         self.assertEqual(utc_sunset, expected_sunset)
         self.assertEqual(local_sunset, expected_sunset)
         # Check with no params
@@ -65,13 +65,13 @@ class TestEastSun(unittest.TestCase):
 
     def test_get_sunrise_time(self):
         # Sunrise in Tokyo
-        expected_utc_sunrise = datetime(2024, 3, 10, 20, 57, 36, tzinfo=tz.UTC)
-        expected_local_sunrise = datetime(2024, 3, 11, 5, 57, 36, tzinfo=tz.gettz("Asia/Tokyo"))
+        expected_utc_sunrise = datetime(2024, 3, 10, 20, 57, 36, tzinfo=timezone.utc)
+        expected_local_sunrise = datetime(2024, 3, 11, 5, 57, 36, tzinfo=ZoneInfo("Asia/Tokyo"))
 
         utc_sunrise = self.sun.get_sunrise_time(datetime(2024, 3, 11))
         self.assertEqual(utc_sunrise, expected_utc_sunrise)
 
-        local_time_sunrise = self.sun.get_local_sunrise_time(datetime(2024, 3, 11), time_zone=tz.gettz("Asia/Tokyo"))
+        local_time_sunrise = self.sun.get_local_sunrise_time(datetime(2024, 3, 11), time_zone=ZoneInfo("Asia/Tokyo"))
         self.assertEqual(local_time_sunrise, expected_local_sunrise)
 
 
@@ -83,14 +83,14 @@ class TestSouthSun(unittest.TestCase):
 
     def test_get_sunrise_time(self):
         # Sunrise in Sydney
-        expected_sunrise = datetime(2024, 3, 11, 6, 51, 36, tzinfo=tz.gettz("Australia/Sydney"))
-        local_sunrise = self.sun.get_sunrise_time(datetime(2024, 3, 11), tz.gettz("Australia/Sydney"))
+        expected_sunrise = datetime(2024, 3, 11, 6, 51, 36, tzinfo=ZoneInfo("Australia/Sydney"))
+        local_sunrise = self.sun.get_sunrise_time(datetime(2024, 3, 11), ZoneInfo("Australia/Sydney"))
         self.assertEqual(expected_sunrise, local_sunrise)
 
     def test_get_sunset_time(self):
         # Test sunset in Sydney
-        expected_sunset = datetime(2024, 3, 11, 19, 18, 0, tzinfo=tz.gettz("Australia/Sydney"))
-        local_sunset = self.sun.get_sunset_time(datetime(2024, 3, 11), tz.gettz("Australia/Sydney"))
+        expected_sunset = datetime(2024, 3, 11, 19, 18, 0, tzinfo=ZoneInfo("Australia/Sydney"))
+        local_sunset = self.sun.get_sunset_time(datetime(2024, 3, 11), ZoneInfo("Australia/Sydney"))
         self.assertEqual(expected_sunset, local_sunset)
 
 
@@ -153,12 +153,12 @@ class TestEquatorSun(unittest.TestCase):
         self.sun = Sun(_QUITO_LAT, _QUITO_LON)
 
     def test_get_sunrise_time(self):
-        expected_sunrise = datetime(2024, 3, 20, 11, 18, 0, tzinfo=tz.UTC)
+        expected_sunrise = datetime(2024, 3, 20, 11, 18, 0, tzinfo=timezone.utc)
         utc_sunrise = self.sun.get_sunrise_time(datetime(2024, 3, 20))
         self.assertEqual(utc_sunrise, expected_sunrise)
 
     def test_get_sunset_time(self):
-        expected_sunset = datetime(2024, 3, 20, 23, 24, 0, tzinfo=tz.UTC)
+        expected_sunset = datetime(2024, 3, 20, 23, 24, 0, tzinfo=timezone.utc)
         utc_sunset = self.sun.get_sunset_time(datetime(2024, 3, 20))
         self.assertEqual(utc_sunset, expected_sunset)
 
@@ -221,15 +221,15 @@ class TestDeprecatedWrappers(unittest.TestCase):
     def test_get_local_sunrise_time_warns_and_matches(self):
         at_date = datetime(2024, 3, 11)
         with self.assertWarns(DeprecationWarning):
-            deprecated_result = self.sun.get_local_sunrise_time(at_date, tz.gettz("America/Los_Angeles"))
-        direct_result = self.sun.get_sunrise_time(at_date, tz.gettz("America/Los_Angeles"))
+            deprecated_result = self.sun.get_local_sunrise_time(at_date, ZoneInfo("America/Los_Angeles"))
+        direct_result = self.sun.get_sunrise_time(at_date, ZoneInfo("America/Los_Angeles"))
         self.assertEqual(deprecated_result, direct_result)
 
     def test_get_local_sunset_time_warns_and_matches(self):
         at_date = datetime(2024, 3, 11)
         with self.assertWarns(DeprecationWarning):
-            deprecated_result = self.sun.get_local_sunset_time(at_date, tz.gettz("America/Los_Angeles"))
-        direct_result = self.sun.get_sunset_time(at_date, tz.gettz("America/Los_Angeles"))
+            deprecated_result = self.sun.get_local_sunset_time(at_date, ZoneInfo("America/Los_Angeles"))
+        direct_result = self.sun.get_sunset_time(at_date, ZoneInfo("America/Los_Angeles"))
         self.assertEqual(deprecated_result, direct_result)
 
 
@@ -243,6 +243,7 @@ class TestSunConstructor(unittest.TestCase):
     def test_computes_lngHour_for_eastern_longitude(self):
         sun = Sun(_TOKYO_LAT, _TOKYO_LON)
         self.assertAlmostEqual(sun.lngHour, _TOKYO_LON / 15)
+
 
 if __name__ == "__main__":
     unittest.main()
