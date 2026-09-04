@@ -1,5 +1,5 @@
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from dateutil import tz
 
 from suntime import Sun, SunTimeException, MidnightSunException, PolarNightException
@@ -15,6 +15,12 @@ _SYDNEY_LON = 151.2093
 
 _NORTH_POLE_LAT = 90
 _NORTH_POLE_LON = 0
+
+_SOUTH_POLE_LAT = -90
+_SOUTH_POLE_LON = 0
+
+_QUITO_LAT = -0.1807
+_QUITO_LON = -78.4678
 
 
 class TestWestSun(unittest.TestCase):
@@ -118,6 +124,125 @@ class TestNoSun(unittest.TestCase):
         with self.assertRaisesRegex(MidnightSunException, "The sun"):
             self.sun.get_sunset_time(d)
 
+
+class TestSouthPoleNoSun(unittest.TestCase):
+    """Mirror of TestNoSun for the southern polar location, to guard the exception
+    branches against a hemisphere-specific regression."""
+
+    def setUp(self):
+        self.sun = Sun(_SOUTH_POLE_LAT, _SOUTH_POLE_LON)
+
+    def test_get_sunset_time_polar_night(self):
+        # Winter in the southern hemisphere: sun never rises above the horizon
+        d = datetime(2024, 6, 21)
+        with self.assertRaisesRegex(PolarNightException, "The sun"):
+            self.sun.get_sunset_time(d)
+
+    def test_get_sunrise_time_midnight_sun(self):
+        # Summer in the southern hemisphere: sun never sets
+        d = datetime(2024, 12, 21)
+        with self.assertRaisesRegex(MidnightSunException, "The sun"):
+            self.sun.get_sunrise_time(d)
+
+
+class TestEquatorSun(unittest.TestCase):
+    """Near the equator sunrise/sunset should stay close to 6 AM/6 PM local time
+    with little seasonal variation."""
+
+    def setUp(self):
+        self.sun = Sun(_QUITO_LAT, _QUITO_LON)
+
+    def test_get_sunrise_time(self):
+        expected_sunrise = datetime(2024, 3, 20, 11, 18, 0, tzinfo=tz.UTC)
+        utc_sunrise = self.sun.get_sunrise_time(datetime(2024, 3, 20))
+        self.assertEqual(utc_sunrise, expected_sunrise)
+
+    def test_get_sunset_time(self):
+        expected_sunset = datetime(2024, 3, 20, 23, 24, 0, tzinfo=tz.UTC)
+        utc_sunset = self.sun.get_sunset_time(datetime(2024, 3, 20))
+        self.assertEqual(utc_sunset, expected_sunset)
+
+
+class TestUtcDayOffset(unittest.TestCase):
+    """CLAUDE.md calls out utc_day_offset as a past source of bugs: a western
+    longitude's sunset can land on the following UTC calendar date, and an eastern
+    longitude's sunrise can land on the previous one. Pin that invariant explicitly."""
+
+    def test_west_sunset_rolls_to_next_utc_day(self):
+        sun = Sun(_SF_LAT, _SF_LON)
+        requested = datetime(2024, 3, 11)
+        utc_sunset = sun.get_sunset_time(requested)
+        self.assertEqual(utc_sunset.date(), requested.date() + timedelta(days=1))
+
+    def test_east_sunrise_rolls_to_previous_utc_day(self):
+        sun = Sun(_TOKYO_LAT, _TOKYO_LON)
+        requested = datetime(2024, 3, 11)
+        utc_sunrise = sun.get_sunrise_time(requested)
+        self.assertEqual(utc_sunrise.date(), requested.date() - timedelta(days=1))
+
+
+class TestCustomZenith(unittest.TestCase):
+    """get_sun_timedelta accepts a custom zenith (e.g. for civil twilight); a wider
+    zenith angle should produce an earlier rise / later set than the default 90.8."""
+
+    def setUp(self):
+        self.sun = Sun(_SF_LAT, _SF_LON)
+
+    def test_civil_twilight_precedes_standard_sunrise(self):
+        at_date = datetime(2024, 3, 11)
+        standard_rise = self.sun.get_sun_timedelta(at_date, timezone.utc, is_rise_time=True)
+        civil_twilight_rise = self.sun.get_sun_timedelta(at_date, timezone.utc, is_rise_time=True, zenith=96)
+        self.assertLess(civil_twilight_rise, standard_rise)
+
+
+class TestNoneTimezone(unittest.TestCase):
+    """time_zone=None falls back to the machine's local timezone (see CLAUDE.md)."""
+
+    def test_get_sunrise_time_matches_explicit_local_offset(self):
+        sun = Sun(_SF_LAT, _SF_LON)
+        at_date = datetime(2024, 3, 11)
+        utc_sunrise = sun.get_sunrise_time(at_date, time_zone=timezone.utc)
+        local_offset = datetime.now().astimezone().utcoffset()
+        expected_naive_local = (utc_sunrise + local_offset).replace(tzinfo=None)
+
+        result = sun.get_sunrise_time(at_date, time_zone=None)
+
+        self.assertIsNone(result.tzinfo)
+        self.assertEqual(result, expected_naive_local)
+
+
+class TestDeprecatedWrappers(unittest.TestCase):
+    """get_local_sunrise_time/get_local_sunset_time are deprecated but must keep
+    warning and delegating to the non-deprecated methods with identical results."""
+
+    def setUp(self):
+        self.sun = Sun(_SF_LAT, _SF_LON)
+
+    def test_get_local_sunrise_time_warns_and_matches(self):
+        at_date = datetime(2024, 3, 11)
+        with self.assertWarns(DeprecationWarning):
+            deprecated_result = self.sun.get_local_sunrise_time(at_date, tz.gettz("America/Los_Angeles"))
+        direct_result = self.sun.get_sunrise_time(at_date, tz.gettz("America/Los_Angeles"))
+        self.assertEqual(deprecated_result, direct_result)
+
+    def test_get_local_sunset_time_warns_and_matches(self):
+        at_date = datetime(2024, 3, 11)
+        with self.assertWarns(DeprecationWarning):
+            deprecated_result = self.sun.get_local_sunset_time(at_date, tz.gettz("America/Los_Angeles"))
+        direct_result = self.sun.get_sunset_time(at_date, tz.gettz("America/Los_Angeles"))
+        self.assertEqual(deprecated_result, direct_result)
+
+
+class TestSunConstructor(unittest.TestCase):
+    def test_stores_lat_lon_and_computes_lngHour(self):
+        sun = Sun(_SF_LAT, _SF_LON)
+        self.assertEqual(sun._lat, _SF_LAT)
+        self.assertEqual(sun._lon, _SF_LON)
+        self.assertAlmostEqual(sun.lngHour, _SF_LON / 15)
+
+    def test_computes_lngHour_for_eastern_longitude(self):
+        sun = Sun(_TOKYO_LAT, _TOKYO_LON)
+        self.assertAlmostEqual(sun.lngHour, _TOKYO_LON / 15)
 
 if __name__ == "__main__":
     unittest.main()
